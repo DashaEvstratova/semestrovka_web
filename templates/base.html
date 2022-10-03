@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <style>
+        body {
+            background-color: floralwhite;
+            mdisplay: table-cell;
+            vertical-align: middle;
+        }
+        h1{
+            border: 3px solid floralwhite;
+            font-family: cursive;
+        }
+        div {
+            background-color: PapayaWhip;
+            border: 3px solid Moccasin;
+            margin: 10px;
+            width: 500px;
+            padding: 10px;
+            font-size:130%;
+        }
+        form {
+            position:absolute;
+            left: 40%;
+            font-family: cursive;
+            top: 30%;
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+    {#
+        базовый шаблон, который используют остальные шаблоны
+        имеет общую структуру, чтобы не дублировать код
+
+        инициируем блок body, который переопределяется в шаблонах
+    #}
+    {% block body %}{% endblock %}
+</body>
+</html>
