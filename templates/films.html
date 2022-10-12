@@ -2,43 +2,12 @@
 
 {% block body %}
     <h1>{{ title }}</h1>
-    {% if country %}
-        {% for film in films %}
-            {% if rating %}
-                {% if country == film.country and '%0.2f'|format(rating|float) <= '%0.2f'|format(film.rating|float)%}
-                    <div onclick="location.href = '{{ url_for("get_film", film_id=film.id) }}'">
-                        <p>{{ film.name }}</p>
-                        <p>{{ film.rating }}</p>
-                        <p>{{ film.country }}</p>
-                    </div>
-                {% endif %}
-            {% else %}
-                {% if country == film.country%}
-                    <div onclick="location.href = '{{ url_for("get_film", film_id=film.id) }}'">
-                        <p>{{ film.name }}</p>
-                        <p>{{ film.rating }}</p>
-                        <p>{{ film.country }}</p>
-                    </div>
-                {% endif %}
-            {% endif %}
-        {% endfor %}
-    {% elif rating %}
             {% for film in films %}
-                {% if '%0.2f'|format(rating|float) <= '%0.2f'|format(film.rating|float) %}
                     <div onclick="location.href = '{{ url_for("get_film", film_id=film.id) }}'">
                         <p>{{ film.name }}</p>
                         <p>{{ film.rating }}</p>
                         <p>{{ film.country }}</p>
                     </div>
-                {% endif %}
             {% endfor %}
-        {% else %}
-        {% for film in films %}
-            <div onclick="location.href = '{{ url_for("get_film", film_id=film.id) }}'">
-                <p>{{ film.name }}</p>
-                <p>{{ film.rating }}</p>
-            </div>
-        {% endfor %}
-    {% endif %}
 
 {% endblock %}
