@@ -1,0 +1,121 @@
+#firs{
+background: transparent;
+color: #000;
+
+font-family: fantasy;
+position: absolute;
+left: 45%;
+font-size: 400%;
+}
+#rt{
+background-color: #ff0;
+border-style: solid;
+position:absolute;
+font-size:25;
+left: 9%;
+word-spacing: 40px;
+top: 30%;
+}
+#ew{
+width:100%;
+}
+#er{
+position:absolute;
+top: 45%;
+left: 13%;
+}
+#io{
+position:absolute;
+top: 45%;
+left: 33%;
+}
+#iq{
+position:absolute;
+top: 45%;
+left: 53%;
+}
+#iw{
+position:absolute;
+top: 45%;
+left: 73%;
+}
+#ie{
+position:absolute;
+top: 85%;
+left: 13%;
+}
+#ir{
+position:absolute;
+top: 85%;
+left: 33%;
+}
+#it{
+position:absolute;
+top: 85%;
+left: 53%;
+}
+#iy{
+position:absolute;
+top: 85%;
+left: 73%;
+}
+#iu{
+position:absolute;
+top: 125%;
+left: 13%;
+}
+#ii{
+position:absolute;
+top: 125%;
+left: 33%;
+}
+#ip{
+position:absolute;
+top: 125%;
+left: 53%;
+}
+#ia{
+position:absolute;
+top: 125%;
+left: 73%;
+}
+#is{
+position:absolute;
+top: 165%;
+left: 13%;
+}
+#id{
+position:absolute;
+top: 165%;
+left: 33%;
+}
+#if{
+position:absolute;
+top: 165%;
+left: 53%;
+}
+#ig{
+position:absolute;
+top: 165%;
+left: 73%;
+}
+#ih{
+position:absolute;
+top: 205%;
+left: 13%;
+}
+#ij{
+position:absolute;
+top: 205%;
+left: 33%;
+}
+#ik{
+position:absolute;
+top: 205%;
+left: 53%;
+}
+#il{
+position:absolute;
+top: 205%;
+left: 73%;
+}

@@ -3,7 +3,7 @@ import psycopg2
 class Database:
     def __init__(self):
         self.con = psycopg2.connect(
-            dbname="web",
+            dbname="semestrovka1",
             user="postgres",
             password=1864,
             host="localhost",
@@ -11,13 +11,13 @@ class Database:
         )
         self.cur = self.con.cursor()
 
-    def insert(self, object):
-        inserts = f"INSERT INTO films values {object};\n"
+    def insert(self, table, object):
+        inserts = f"INSERT INTO {table} values {object};\n"
         self.cur.execute(inserts)
         self.con.commit()
 
-    def select_all(self):
-        self.cur.execute(f"SELECT * FROM films")
+    def select_all(self, table):
+        self.cur.execute(f"SELECT * FROM {table}")
         return self.help_select()
 
     def select(self, parametr, name):
@@ -49,6 +49,6 @@ class Database:
 
         return films
 
-    def last_id(self):
-        films = self.select_all()
-        return films[-1]['id']
+    def last_id(self, table):
+        tables = self.select_all(table)
+        return tables[-1]['id']

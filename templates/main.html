@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='main.css') }}">
+    <title>Меню</title>
+</head>
+<h1 id="first">Fetrisa_toy</h1>
+
+<h1 id="second">Добро пожаловать!</h1>
+
+<div class="rt"><a
+        href="menu/toys/">Игрушки</a> <a href="menu/sets/">Наборы</a> <a href="menu/process/">Процесс</a> <a href="menu/login/">Вход</a> <a
+        href="menu/registration/">Регистрация</a>
+    <a href="backet/">Корзина</a></div>
+<div class="picture">
+    <p class="thumb">
+        {% for product in products %}
+            <img
+                    src='{{ product.picture }}' alt="Упс" onclick="info('1000 рублей')"
+                    width="200"
+                    height="200"
+                    class="right"
+            >
+        {% endfor %}
+    </p>
+</div>
+</div>
+</body>
+</html>

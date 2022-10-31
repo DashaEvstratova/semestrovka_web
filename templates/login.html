@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<head>
+        <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='login_registr.css') }}">
+    <title>login</title>
+</head>
+<body>
+<div class='form'>
+    <form action="action_page.php">
+        <div class="container">
+            <h1>Вход</h1>
+            <hr>
+            <br>
+            <label for="email"><b>Email</b></label>
+            <input type="text" placeholder="Email" name="email" required>
+            <br>
+            <br>
+            <label for="psw"><b>Пароль</b></label>
+            <input type="password" placeholder="Password" name="psw" required>
+            <br>
+            <br>
+            <hr>
+            <br>
+            <button type="submit" class="registerbtn">Вход</button>
+        </div>
+    </form>
+</div>
+</body>
