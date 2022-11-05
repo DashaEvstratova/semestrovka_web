@@ -7,32 +7,30 @@
 </head>
 <body>
 <div class='form'>
-    <form action="action_page.php">
+    <form method="post">
         <div class="container">
             <h1>Регистрация</h1>
             <hr>
+            <p>{{ error }}</p>
             <br>
-            {% if error %}
-            <h1{{ error }}></h1>
-            {% endif %}
             <label for="email"><b>Email</b></label>
-            <input type="text" placeholder="Email" name="email" required>
+            <input type="text" placeholder="Email" name="email" value="{{ email }}" required>
             <br>
             <br>
             <label for="name"><b>Имя</b></label>
-            <input type="text" placeholder="Name" name="name" required>
+            <input type="text" placeholder="Name" name="name" value="{{ name}}" required>
             <br>
             <br>
             <label for="second-name"><b>Фамилия</b></label>
-            <input type="text" placeholder="Second Name" name="second-name" required>
+            <input type="text" placeholder="Second Name" name="second-name" value="{{second_name}}" required>
             <br>
             <br>
             <label for="birthday"><b>Дата Рождения</b></label>
-            <input type="date" placeholder="Birthday" name="birthday" required>
+            <input type="date" placeholder="Birthday" name="birthday" value="{{birthday}}" required>
             <br>
             <br>
             <label for="phone"><b>Номер Телефона</b></label>
-            <input type="text" placeholder="Phone" name="phone" required>
+            <input type="text" placeholder="Phone" name="phone" value="{{phone}}" required>
             <br>
             <br>
             <label for="psw"><b>Пароль</b></label>

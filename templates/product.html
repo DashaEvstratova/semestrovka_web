@@ -1,0 +1,60 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='product.css') }}">
+    <title>Product</title>
+</head>
+<body>
+<h1 id="first">Fetrisa_toy</h1>
+<div id="therd"><strong>{{ product.name }}</strong></div>
+<div class="rt"><a
+        href="/menu">Меню</a> <a href="/menu/toys/">Игрушки</a> <a href="/menu/sets/">Наборы</a> <a href="/backet/">Корзина</a>  <a href="/menu/like/">Избранное</a>
+</div>
+<div class="all">
+<div class="picture">
+    <p class="thumb">
+
+        <img
+                src='{{ product.picture }}' alt="Упс"
+                width="450"
+                height="450"
+                class="right"
+        >
+    </p>
+</div>
+        <div class="discripion">
+                {% if request.cookies.get('user') == 'admin'%}
+                    <div>
+     <form method="POST">
+        <input type="hidden" name="index" value="reduct">
+         <button type="submit" class="btn btn-dark" value="Редактировать товар"></button>
+    <br>
+     </form>
+                    </div>
+                    <div>
+                    <form method="POST">
+        <input type="hidden" name="index" value="del">
+         <button type="submit" class="btn btn-dark" value="Удаление товара"></button>
+    <br>
+    <br>
+    </form>
+                    </div>
+    {% endif %}
+        <br>
+    <p>Цена: {{ product.price }}</p>
+            <br>
+    <p>Описание: {{ product.discription }}</p>
+        <from method="post">
+            <input class="btn" type="hidden" name="index" value="bak">
+        <input type="image" src="/static/bak.jpg" class="btn" width="50"
+               height="50"
+               class="right">
+        </from>
+        <input class="btn" type="hidden" name="index" value="nlike">
+        <input type="image" src="/static/like.jpg" class="btn" width="50"
+               height="50"
+               class="right">
+</div>
+</div>
+</body>
+</html>

@@ -20,18 +20,9 @@ class Database:
         self.cur.execute(f"SELECT * FROM {table}")
         return self.help_select()
 
-    def select(self, parametr, name):
-        self.cur.execute(f"SELECT * FROM films WHERE {parametr} = '{name}';")
+    def select(self, parametr, name, table):
+        self.cur.execute(f"SELECT * FROM {table} WHERE {parametr} ='{name}';")
         return self.help_select()
-
-    def select_rating(self, rating):
-        self.cur.execute(f"SELECT * FROM films WHERE rating >= {rating};")
-        return self.help_select()
-
-    def select_rating_country(self, country_, rating):
-        self.cur.execute(f"SELECT * FROM films WHERE country = '{country_}' AND rating >= '{rating}';")
-        return self.help_select()
-
 
     def help_select(self):
         data = self.prepare_data(self.cur.fetchall())
@@ -51,4 +42,5 @@ class Database:
 
     def last_id(self, table):
         tables = self.select_all(table)
+        print(tables)
         return tables[-1]['id']

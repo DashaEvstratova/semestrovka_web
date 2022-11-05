@@ -10,20 +10,28 @@
 <h1 id="second">Добро пожаловать!</h1>
 
 <div class="rt"><a
-        href="menu/toys/">Игрушки</a> <a href="menu/sets/">Наборы</a> <a href="menu/process/">Процесс</a> <a href="menu/login/">Вход</a> <a
-        href="menu/registration/">Регистрация</a>
-    <a href="backet/">Корзина</a></div>
+        href="/menu/toys/">Игрушки</a> <a href="/menu/sets/">Наборы</a> <a href="/menu/process/">Процесс</a> <a href="/menu/backet/">Корзина</a> <a href="/menu/like/">Избранное</a>
+    {% if not request.cookies.get('user')%}
+    <a href="/menu/login/">Вход</a> <a
+        href="/menu/registration/">Регистрация</a>
+{% else %}
+    <a href="/menu/logout/">Выход</a>
+        <br>
+        <a href="/menu/profil/">Профиль</a>
+    {% endif %}
+</div>
 <div class="picture">
-    <p class="thumb">
+<p class="thumb">
         {% for product in products %}
-            <img
+            <img onclick="location.href = '{{ url_for("get_product", product_id=product.id) }}'"
                     src='{{ product.picture }}' alt="Упс" onclick="info('1000 рублей')"
-                    width="200"
-                    height="200"
+                    width="300"
+                    height="300"
                     class="right"
             >
+
         {% endfor %}
-    </p>
+ </p>
 </div>
 </div>
 </body>
