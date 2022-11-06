@@ -124,35 +124,3 @@ button {
     border: none;
     transition: all 0.5s ease 0s;
 }
-
-button:hover,
-button:focus {
-    color: #ffe9d0;
-    letter-spacing: 4px;
-    box-shadow: none;
-    outline: none;
-}
-
-.btn-dark {
-    color: #000;
-    background-color: #a4865a;
-    margin-right: 10px;
-    margin-left: 40px;
-    font-size: 15px;
-    font-weight: bold;
-    text-transform: uppercase;
-    width: 90%;
-    padding: 18px 79px 15px;
-    border-radius: 25px;
-    box-shadow: 6px 6px 6px #ffffff, -6px -6px 6px #ffffff;
-    border: none;
-    transition: all 0.5s ease 0s;
-}
-
-.btn-dark:hover,
-.btn-dark:focus {
-    color: #ffe9d0;
-    letter-spacing: 4px;
-    box-shadow: none;
-    outline: none;
-}

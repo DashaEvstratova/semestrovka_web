@@ -1,18 +1,18 @@
 <html>
 <head>
     <meta charset="utf-8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='product.css') }}">
     <title>Product</title>
 </head>
 <body>
 <h1 id="first">Fetrisa_toy</h1>
-<div id="therd"><strong>{{ product.name }}</strong></div>
 <div class="rt"><a
-        href="/menu">Меню</a> <a href="/menu/toys/">Игрушки</a> <a href="/menu/sets/">Наборы</a> <a href="/backet/">Корзина</a>
+        href="/menu">Меню</a> <a href="/menu/toys/">Игрушки</a> <a href="/menu/sets/">Наборы</a> <a href="/menu/backet/">Корзина</a>
     <a href="/menu/like/">Избранное</a>
 </div>
-
 <div class="all">
+<div id="therd"><strong>{{ product.name }}</strong></div>
     <p class="thumb">
         <img
                 src='{{ product.picture }}' alt="Упс"
@@ -37,25 +37,24 @@
             <form action="/menu/{{ product.id }}/del/" method="POST">
                 <input type="submit" class="btn btn-dark" value="Удаление товара">
             </form>
-
             <br>
         {% endif %}
         <p>Цена: {{ product.price }}</p>
-        <br>
         <p>Описание: {{ product.discription }}</p>
-        <br>
         {% if product.status == 'True' %}
             <p>Есть в наличие</p>
-            <from method="post">
-                <input class="btn" type="hidden" name="index" value="bak">
+            <form action="/menu/bac/" method="post">
+                <input class="btn" type="hidden" name="index" value={{ product.id }}>
                 <input type="image" src="/static/bak.jpg" class="btn" width="50"
                        height="50"
                        class="right">
-            </from>
-            <input class="btn" type="hidden" name="index" value="nlike">
+            </form>
+            <form action="/menu/nlike/" method="post">
+            <input class="btn" type="hidden" name="index" value={{ product.id }}>
             <input type="image" src="/static/like.jpg" class="btn" width="50"
                    height="50"
                    class="right">
+            </form>
         {% else %}
             <p>Нет в наличие</p>
         {% endif %}

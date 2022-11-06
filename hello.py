@@ -120,22 +120,9 @@ def process():
 
 
 # product
-@app.route("/menu/<int:product_id>", methods=['POST', 'GET'])
+@app.route("/menu/<int:product_id>")
 def get_product(product_id):
     product = db.select('id', product_id, 'products')
-    # if request.method == 'post':
-    #     if request.cookies.get('backet') and request.form['index'] == 'backet':
-    #         backet = request.cookies.get('backet').append(product_id)
-    #         res = make_response("")
-    #         res.set_cookie("backet", backet, 60 * 60 * 24 * 15)
-    #         res.headers['location'] = url_for('menu')
-    #         return res, 302
-    #     else:
-    #         backet = [product_id]
-    #         res = make_response("")
-    #         res.set_cookie("backet", backet, 60 * 60 * 24 * 15)
-    #         res.headers['location'] = url_for('menu')
-    #         return res, 302
     if len(product):
         return render_template("product.html", title=product['name'], product=product)
 
@@ -188,10 +175,9 @@ def add_product():
                    'picture': picture}
     return render_template("product_add.html", **context)
 
-
+'''
 @app.route("/menu/<int:product_id>/reduct_product/", methods=['POST', 'GET'])
 def reduct_product(product_id):
-    error = ''
     product = db.select('id', product_id, 'products')
     id = product['id']
     if request.method == 'POST':
@@ -199,30 +185,75 @@ def reduct_product(product_id):
         discription = request.form.get('discription')
         price = request.form.get('price')
         picture = request.form.get('picture')
-        if not error:
-            if name != product['name']:
-                db.update('products', id, 'name', name)
-            if discription != product['discription']:
-                db.update('products', id, 'discription', discription)
-            if price != product['price']:
-                db.update_int('products', id, 'price', price)
-            if picture != product['picture']:
-                db.update('products', id, 'picture', picture)
-            return redirect(url_for('get_product', product_id=id), 301)
-        return render_template("reduct_product.html", product=product, error=error)
-    return render_template("reduct_product.html", product=product, error=error)
+        if name != product['name']:
+            db.update('products', id, 'name', name)
+        if discription != product['discription']:
+            db.update('products', id, 'discription', discription)
+        if price != product['price']:
+            db.update('products', id, 'price', price)
+        if picture != product['picture']:
+            db.update('products', id, 'picture', picture)
+        return redirect(url_for('get_product', product_id=id), 301)
+    return render_template("reduct_product.html", product=product)
+'''
 
 
 # backet
-@app.route("/menu/backet/")
+@app.route("/menu/bac/", methods=['POST', 'GET'])
+def bac():
+    product_id = request.form['index']
+    if request.cookies.get('backet'):
+        backet = request.cookies.get('backet') + 'l' + str(product_id)
+        res = make_response("")
+        res.set_cookie("backet", backet, 60 * 60 * 24 * 15)
+        res.headers['location'] = url_for('menu')
+        return res, 302
+    else:
+        backet = f"{product_id}"
+        res = make_response("")
+        res.set_cookie("backet", backet, 60 * 60 * 24 * 15)
+        res.headers['location'] = url_for('menu')
+        return res, 302
+
+
+@app.route("/menu/nlike/", methods=['POST', 'GET'])
+def nlike():
+    product_id = request.form['index']
+    if request.cookies.get('like'):
+        like = request.cookies.get('like') + 'l' + str(product_id)
+        res = make_response("")
+        res.set_cookie("like", like, 60 * 60 * 24 * 15)
+        res.headers['location'] = url_for('get_product', product_id=product_id, like='True')
+        return res, 302
+    else:
+        like = f"{product_id}"
+        res = make_response("")
+        res.set_cookie("like", like, 60 * 60 * 24 * 15)
+        res.headers['location'] = url_for('menu')
+        return res, 302
+
+
+@app.route("/menu/backet/", methods=['POST', 'GET'])
 def backet():
-    product = request.cookies.get('backet')
+    ids = request.cookies.get('backet').split('l')
+    products = []
+    for id in ids:
+        id = int(id)
+        product = db.select('id', id, 'products')
+        products.append(product)
+    return render_template("backet.html", products = products)
 
 
 # like
 @app.route("/menu/like/")
 def like():
-    product = request.cookies.get('backet')
+    ids = request.cookies.get('like').split('l')
+    products = []
+    for id in ids:
+        id = int(id)
+        product = db.select('id', id, 'products')
+        products.append(product)
+    return render_template("backet.html", products=products)
 
 
 # profil
