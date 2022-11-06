@@ -7,22 +7,23 @@
 <body>
 <h1 id="first">Fetrisa_toy</h1>
 <div class="rt"><a
-        href="/menu">Меню</a> <a href="/menu/toys/">Игрушки</a> <a href="/menu/sets/">Наборы</a> <a href="/backet/">Корзина</a>  <a href="/menu/like/">Избранное</a>
+        href="/menu">Меню</a> <a href="/menu/toys/">Игрушки</a> <a href="/menu/sets/">Наборы</a> <a href="/backet/">Корзина</a>
+    <a href="/menu/like/">Избранное</a>
 </div>
 <div class="all">
-<div class="picture">
-
-    <br>
-        <br>
+    <p class="thumb">
+    <div class="discripion1">
         <p>Имя: {{ user.name}}</p>
     <p>Email: {{ user.email }}</p>
     <p>Фамилия: {{ user.second_name }}</p>
     <p>Дата рождения: {{ user.birthday }}</p>
     <p>Номер телефона: {{ user.phone }}</p>
-<form method="POST">
-        <input type="hidden" name="index" value="reduct">
-         <button type="submit" class="btn btn-dark" value="Редактировать товар"></button>
+    </p>
+    <br>
+    <form method="post">
+     <button type="submit" class="registerbtn">Редактировать профиль</button>
     </form>
+</div>
 </div>
 </div>
 </body>

@@ -16,3 +16,10 @@ def get_sets_from_db(name):
         'products': products,
     }
     return context
+
+def get_toys():
+    products = db.select_not()
+    context = {
+        'products': products,
+    }
+    return context

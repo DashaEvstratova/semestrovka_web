@@ -20,6 +20,10 @@ class Database:
         self.cur.execute(f"SELECT * FROM {table}")
         return self.help_select()
 
+    def select_not(self):
+        self.cur.execute(f"SELECT * FROM products WHERE name !='Процесс';")
+        return self.help_select()
+
     def select(self, parametr, name, table):
         self.cur.execute(f"SELECT * FROM {table} WHERE {parametr} ='{name}';")
         return self.help_select()
@@ -28,19 +32,26 @@ class Database:
         data = self.prepare_data(self.cur.fetchall())
         if len(data) == 1:
             data = data[0]
-
         return data
 
     def prepare_data(self, data):
-        films = []
+        products = []
         if len(data):
             column_names = [desc[0] for desc in self.cur.description]
             for row in data:
-                films += [{c_name: row[key] for key, c_name in enumerate(column_names)}]
+                products += [{c_name: row[key] for key, c_name in enumerate(column_names)}]
 
-        return films
+        return products
+
+    def select_max(self, table):
+        self.cur.execute(f"SELECT max(id) FROM {table}")
+        return self.help_select()
 
     def last_id(self, table):
-        tables = self.select_all(table)
-        print(tables)
-        return tables[-1]['id']
+        tables = self.select_max(table)
+        print(tables['max'])
+        return tables['max']
+
+    def update(self, table, id, parametr, data):
+        self.cur.execute(f"UPDATE {table} SET {parametr} = '{data}' WHERE id = {id};")
+        self.con.commit()

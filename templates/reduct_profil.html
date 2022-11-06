@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>Регистрация</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='login_registr.css') }}">
+</head>
+<body>
+<div class='form'>
+    <form method="post">
+        <div class="container">
+            <hr>
+            <p>{{ error }}</p>
+            <br>
+            <label for="email"><b>Email</b></label>
+            <input type="text" placeholder="Email" name="email" value="{{ user.email }}" required>
+            <br>
+            <br>
+            <label for="name"><b>Имя</b></label>
+            <input type="text" placeholder="Name" name="name" value="{{ user.name }}" required>
+            <br>
+            <br>
+            <label for="second-name"><b>Фамилия</b></label>
+            <input type="text" placeholder="Second Name" name="second-name" value="{{ user.second_name }}" required>
+            <br>
+            <br>
+            <label for="birthday"><b>Дата Рождения</b></label>
+            <input type="date" placeholder="Birthday" name="birthday" value="{{ user.birthday }}" required>
+            <br>
+            <br>
+            <label for="phone"><b>Номер Телефона</b></label>
+            <input type="text" placeholder="Phone" name="phone" value="{{ user.phone }}" required>
+            <br>
+            <br>
+            <hr>
+            <br>
+            <button type="submit" class="registerbtn">Сохранить изменения</button>
+        </div>
+    </form>
+</div>
+</body>
+</html>

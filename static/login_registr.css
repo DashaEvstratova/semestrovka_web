@@ -4,6 +4,30 @@ body {
     background-attachment: fixed;
     background-size: cover;
 }
+
+#second {
+    border: 0px solid #bba990;
+    padding: 8px;
+    margin-left: 37%;
+    margin-right: 30%;
+    color: #000;
+    font-family: fantasy;
+    font-size: 40px;
+    margin-top: 10px;
+}
+
+
+#first {
+    border: 0px solid #bba990;
+    padding: 8px;
+    margin-left: 37%;
+    margin-right: 30%;
+    color: #000;
+    font-family: fantasy;
+    font-size: 70px;
+    margin-top: 10px;
+}
+
 .form {
     background: #ecf0f3;
     font-family: 'Nunito', sans-serif;
@@ -41,7 +65,7 @@ body {
 
 button {
     color: #000;
-    background-color: #c0a377;
+    background-color: #a4865a;
     font-size: 15px;
     font-weight: bold;
     text-transform: uppercase;
@@ -55,7 +79,7 @@ button {
 
 button:hover,
 button:focus {
-    color: #ffdaab;
+    color: #ffe9d0;
     letter-spacing: 4px;
     box-shadow: none;
     outline: none;

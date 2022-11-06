@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, make_response
 
 from db_util import Database
-from help_function import get_products_from_db, get_sets_from_db
+from help_function import get_products_from_db, get_sets_from_db, get_toys
 
 app = Flask(__name__, static_folder='./static')
 
@@ -10,6 +10,7 @@ app.secret_key = "111"
 db = Database()
 
 
+# menu
 @app.route("/")
 def products_list():
     return redirect(url_for('menu'), 301)
@@ -21,6 +22,7 @@ def menu(user=''):
     return render_template("main.html", **context)
 
 
+# registration
 @app.route("/menu/registration/", methods=['GET', 'POST'])
 def registration():
     error = ''
@@ -63,6 +65,7 @@ def registration():
     return render_template("registration.html", **context)
 
 
+# login
 @app.route("/menu/login/", methods=['POST', 'GET'])
 def login():
     error, email = '', ''
@@ -85,6 +88,7 @@ def login():
     return render_template("login.html", **context)
 
 
+# logout
 @app.route("/menu/logout/")
 def logout():
     res = make_response("Cookie Removed")
@@ -94,23 +98,28 @@ def logout():
     return res, 302
 
 
+# toys
 @app.route("/menu/toys/")
 def toys():
-    context = get_products_from_db()
+    context = get_toys()
     return render_template("toys.html", **context)
 
 
+# sets
 @app.route("/menu/sets/")
 def sets():
     context = get_sets_from_db('Новогодний набор')
     return render_template("sets.html", **context)
 
 
+# process
 @app.route("/menu/process/")
 def process():
     contex = get_sets_from_db("Процесс")
     return render_template("process.html", **contex)
 
+
+# product
 @app.route("/menu/<int:product_id>", methods=['POST', 'GET'])
 def get_product(product_id):
     product = db.select('id', product_id, 'products')
@@ -136,52 +145,131 @@ def get_product(product_id):
     return render_template("error.html", error="Такой игрушки не существует в системе")
 
 
+@app.route("/menu/add_product/", methods=['POST', 'GET'])
+def add_product():
+    error = ''
+    name, discription, price, picture= '', '', '', ''
+    if request.method == 'POST':
+        name = request.form.get('name')
+        picture = request.form.get('picture')
+        price = request.form.get('price')
+        discription = request.form.get('discription')
+        id = db.last_id('products') + 1
+        if not name:
+            error = 'Поле название не заполнено'
+        elif not discription:
+            error = 'Поле описание не заполнено'
+        elif not price:
+            error = 'Поле цена не заполнено'
+        elif not picture:
+            error = 'Поле картинка не заполнено'
+        if not error:
+            a = (id, name, discription, price, picture)
+            db.insert('products', a)
+            return redirect(url_for('menu'), 301)
+    context = {'error': error,
+                   'discription': discription,
+                   'name': name,
+                   'price': price,
+                   'picture': picture}
+    return render_template("product_add.html", **context)
+
+
+@app.route("/menu/reduct_product/", methods=['POST', 'GET'])
+def reduct_product():
+    error = ''
+    email = request.cookies.get('user')
+    user = db.select('email', email, 'client')
+    id = user['id']
+    print(request.method)
+    if request.method == 'POST':
+        email = request.form.get('email')
+        name = request.form.get('name')
+        second_name = request.form.get('second-name')
+        birthday = request.form.get('birthday')
+        phone = request.form.get('phone')
+        print(email, name, second_name, birthday, phone)
+        if ('@' not in email or '.' not in email) and email != 'admin':
+            error = 'Логин не верный'
+        elif birthday >= '2020-12-31':
+            error = 'Дата не верна'
+        if not error:
+            if name != user['name']:
+                db.update('client', id, 'name', name)
+            if second_name != user['second_name']:
+                db.update('client', id, 'second_name', second_name)
+            if birthday != user['birthday']:
+                db.update('client', id, 'birthday', birthday)
+            if phone != user['phone']:
+                print(1)
+                db.update('client', id, 'phone', phone)
+            if email != user['email']:
+                db.update('client', id, 'email', email)
+                res = make_response("")
+                res.set_cookie("user", email, 60 * 60 * 24 * 15)
+                res.headers['location'] = url_for('profil')
+                return res, 302
+            return redirect(url_for('profil'), 301)
+        return render_template("reduct_profil.html", user=user, error=error)
+    return render_template("reduct_profil.html", user=user, error=error)
+
+
+# backet
 @app.route("/menu/backet/")
 def backet():
     product = request.cookies.get('backet')
 
 
-@app.route("/menu/profil/")
+# like
+@app.route("menu/like/")
+def like():
+    pass
+
+
+# profil
+@app.route("/menu/profil/", methods=['POST', 'GET'])
 def profil():
     email = request.cookies.get('user')
     user = db.select('email', email, 'client')
+    if request.method=='POST':
+        return redirect(url_for('reduct_profil'), 301)
     return render_template("profil.html", user=user)
 
 
-#
-# @app.route("/change", methods=['POST',  'GET'])
-# def change():
-#     if request.method == 'POST':
-#         resp = make_response(redirect(url_for('films_list')))
-#         userInput = request.form.get("uI")
-#         if userInput == 'True':
-#             resp.set_cookie('theme', 'night')
-#         else:
-#             resp.set_cookie('theme', 'day')
-#         return resp
-#     return render_template('articla.html')
-
-# @app.route("/film/new_film", methods=['GET', 'POST'])
-# def put_film():
-#     if request.method == 'POST':
-#         film = request.form.get('film')
-#         country = request.form.get('country')
-#         rating = request.form.get('rating')
-#         id = db.last_id() + 1
-#         a = (id, film, rating, country)
-#         db.insert(a)
-#
-#     return render_template("put_film.html")
-#
-# # метод, который возвращает конкретный фильмо по id по относительному пути /film/<int:film_id>,
-# # где film_id - id необходимого фильма
-# @app.route("/film/<int:film_id>")
-# def get_film(film_id):
-#     # используем метод-обертку для выполнения запросов к БД
-#     film = db.select('id', film_id)
-#
-#     if len(film):
-#         return render_template("film.html", title=film['name'], film=film)
-#
-#     # если нужный фильм не найден, возвращаем шаблон с ошибкой
-#     return render_template("error.html", error="Такого фильма не существует в системе")
+@app.route("/menu/reduct_profil/", methods=['POST', 'GET'])
+def reduct_profil():
+    error = ''
+    email = request.cookies.get('user')
+    user = db.select('email', email, 'client')
+    id = user['id']
+    print(request.method)
+    if request.method=='POST':
+        email = request.form.get('email')
+        name = request.form.get('name')
+        second_name = request.form.get('second-name')
+        birthday = request.form.get('birthday')
+        phone = request.form.get('phone')
+        print(email, name, second_name, birthday, phone)
+        if ('@' not in email or '.' not in email) and email != 'admin':
+            error = 'Логин не верный'
+        elif birthday >= '2020-12-31':
+            error = 'Дата не верна'
+        if not error:
+            if name != user['name']:
+                db.update('client', id, 'name', name)
+            if second_name != user['second_name']:
+                db.update('client', id, 'second_name', second_name)
+            if birthday != user['birthday']:
+                db.update('client', id, 'birthday', birthday)
+            if phone != user['phone']:
+                print(1)
+                db.update('client', id, 'phone', phone)
+            if email != user['email']:
+                db.update('client', id, 'email', email)
+                res = make_response("")
+                res.set_cookie("user", email, 60 * 60 * 24 * 15)
+                res.headers['location'] = url_for('profil')
+                return res, 302
+            return redirect(url_for('profil'), 301)
+        return render_template("reduct_profil.html", user=user, error=error)
+    return render_template("reduct_profil.html", user=user, error=error)
