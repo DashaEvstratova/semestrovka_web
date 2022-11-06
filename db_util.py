@@ -17,15 +17,16 @@ class Database:
         self.con.commit()
 
     def select_all(self, table):
-        self.cur.execute(f"SELECT * FROM {table}")
+        self.cur.execute(f"SELECT * FROM {table} ORDER BY id")
         return self.help_select()
 
     def select_not(self):
-        self.cur.execute(f"SELECT * FROM products WHERE name !='Процесс';")
+        self.cur.execute(f"SELECT * FROM products WHERE name !='Процесс'ORDER BY id;")
         return self.help_select()
 
-    def select(self, parametr, name, table):
-        self.cur.execute(f"SELECT * FROM {table} WHERE {parametr} ='{name}';")
+    def select(self, parametr, data, table):
+
+        self.cur.execute(f"SELECT * FROM {table} WHERE {parametr} ='{data}';")
         return self.help_select()
 
     def help_select(self):
@@ -54,4 +55,8 @@ class Database:
 
     def update(self, table, id, parametr, data):
         self.cur.execute(f"UPDATE {table} SET {parametr} = '{data}' WHERE id = {id};")
+        self.con.commit()
+
+    def update_int(self, table, id, parametr, data):
+        self.cur.execute(f"UPDATE {table} SET {parametr} = {data} WHERE id = {id};")
         self.con.commit()

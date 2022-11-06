@@ -123,26 +123,40 @@ def process():
 @app.route("/menu/<int:product_id>", methods=['POST', 'GET'])
 def get_product(product_id):
     product = db.select('id', product_id, 'products')
-    if request.method == 'post':
-        if request.cookies.get('backet') and request.form['index'] == 'backet':
-            backet = request.cookies.get('backet').append(product_id)
-            res = make_response("")
-            res.set_cookie("backet", backet, 60 * 60 * 24 * 15)
-            res.headers['location'] = url_for('menu')
-            return res, 302
-        else:
-            backet = [product_id]
-            res = make_response("")
-            res.set_cookie("backet", backet, 60 * 60 * 24 * 15)
-            res.headers['location'] = url_for('menu')
-            return res, 302
-
-
+    # if request.method == 'post':
+    #     if request.cookies.get('backet') and request.form['index'] == 'backet':
+    #         backet = request.cookies.get('backet').append(product_id)
+    #         res = make_response("")
+    #         res.set_cookie("backet", backet, 60 * 60 * 24 * 15)
+    #         res.headers['location'] = url_for('menu')
+    #         return res, 302
+    #     else:
+    #         backet = [product_id]
+    #         res = make_response("")
+    #         res.set_cookie("backet", backet, 60 * 60 * 24 * 15)
+    #         res.headers['location'] = url_for('menu')
+    #         return res, 302
     if len(product):
         return render_template("product.html", title=product['name'], product=product)
 
     # если нужный фильм не найден, возвращаем шаблон с ошибкой
     return render_template("error.html", error="Такой игрушки не существует в системе")
+
+
+@app.route("/menu/<int:product_id>/del/", methods=['POST', 'GET'])
+def del_product(product_id):
+    product = db.select('id', product_id, 'products')
+    id = product['id']
+    db.update('products', id, 'status', 'False')
+    return redirect(url_for('get_product', product_id=id), 301)
+
+
+@app.route("/menu/<int:product_id>/restart_product/", methods=['POST', 'GET'])
+def restart_product(product_id):
+    product = db.select('id', product_id, 'products')
+    id = product['id']
+    db.update('products', id, 'status', 'True')
+    return redirect(url_for('get_product', product_id=id), 301)
 
 
 @app.route("/menu/add_product/", methods=['POST', 'GET'])
@@ -175,43 +189,28 @@ def add_product():
     return render_template("product_add.html", **context)
 
 
-@app.route("/menu/reduct_product/", methods=['POST', 'GET'])
-def reduct_product():
+@app.route("/menu/<int:product_id>/reduct_product/", methods=['POST', 'GET'])
+def reduct_product(product_id):
     error = ''
-    email = request.cookies.get('user')
-    user = db.select('email', email, 'client')
-    id = user['id']
-    print(request.method)
+    product = db.select('id', product_id, 'products')
+    id = product['id']
     if request.method == 'POST':
-        email = request.form.get('email')
         name = request.form.get('name')
-        second_name = request.form.get('second-name')
-        birthday = request.form.get('birthday')
-        phone = request.form.get('phone')
-        print(email, name, second_name, birthday, phone)
-        if ('@' not in email or '.' not in email) and email != 'admin':
-            error = 'Логин не верный'
-        elif birthday >= '2020-12-31':
-            error = 'Дата не верна'
+        discription = request.form.get('discription')
+        price = request.form.get('price')
+        picture = request.form.get('picture')
         if not error:
-            if name != user['name']:
-                db.update('client', id, 'name', name)
-            if second_name != user['second_name']:
-                db.update('client', id, 'second_name', second_name)
-            if birthday != user['birthday']:
-                db.update('client', id, 'birthday', birthday)
-            if phone != user['phone']:
-                print(1)
-                db.update('client', id, 'phone', phone)
-            if email != user['email']:
-                db.update('client', id, 'email', email)
-                res = make_response("")
-                res.set_cookie("user", email, 60 * 60 * 24 * 15)
-                res.headers['location'] = url_for('profil')
-                return res, 302
-            return redirect(url_for('profil'), 301)
-        return render_template("reduct_profil.html", user=user, error=error)
-    return render_template("reduct_profil.html", user=user, error=error)
+            if name != product['name']:
+                db.update('products', id, 'name', name)
+            if discription != product['discription']:
+                db.update('products', id, 'discription', discription)
+            if price != product['price']:
+                db.update_int('products', id, 'price', price)
+            if picture != product['picture']:
+                db.update('products', id, 'picture', picture)
+            return redirect(url_for('get_product', product_id=id), 301)
+        return render_template("reduct_product.html", product=product, error=error)
+    return render_template("reduct_product.html", product=product, error=error)
 
 
 # backet
@@ -221,9 +220,9 @@ def backet():
 
 
 # like
-@app.route("menu/like/")
+@app.route("/menu/like/")
 def like():
-    pass
+    product = request.cookies.get('backet')
 
 
 # profil
@@ -242,14 +241,12 @@ def reduct_profil():
     email = request.cookies.get('user')
     user = db.select('email', email, 'client')
     id = user['id']
-    print(request.method)
     if request.method=='POST':
         email = request.form.get('email')
         name = request.form.get('name')
         second_name = request.form.get('second-name')
         birthday = request.form.get('birthday')
         phone = request.form.get('phone')
-        print(email, name, second_name, birthday, phone)
         if ('@' not in email or '.' not in email) and email != 'admin':
             error = 'Логин не верный'
         elif birthday >= '2020-12-31':
@@ -262,7 +259,6 @@ def reduct_profil():
             if birthday != user['birthday']:
                 db.update('client', id, 'birthday', birthday)
             if phone != user['phone']:
-                print(1)
                 db.update('client', id, 'phone', phone)
             if email != user['email']:
                 db.update('client', id, 'email', email)
