@@ -1,35 +1,70 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='backet.css') }}">
     <title>Product</title>
 </head>
 <body>
 <h1 id="first">Fetrisa_toy</h1>
 <div class="rt"><a
-        href="/menu">Меню</a> <a href="/menu/toys/">Игрушки</a> <a href="/menu/sets/">Наборы</a> <a href="/backet/">Корзина</a>
+        href="/menu">Меню</a> <a href="/menu/toys/">Игрушки</a> <a href="/menu/sets/">Наборы</a>
     <a href="/menu/like/">Избранное</a>
 </div>
-{% for product in products %}
-    {% if product.status == 'True' %}
-<div class="card mb-3" style="max-width: 540px; margin-top: 20px;  margin-left: auto;
+<div class='form'>
+    <div class="container">
+            {% if  mes == "backet" %}
+<h1>Корзина</h1>
+            {% else %}
+     <h1>Избранное</h1>
+            {% endif %}
+            <hr>
+    {% if products %}
+        {% for product in products %}
+            {% if product.status == 'True' %}
+                <div class="card mb-3" style="max-width: 540px; margin-top: 20px;  margin-left: auto;
     margin-right: auto;">
-  <div class="row no-gutters">
-    <div class="col-md-4">
-      <img
-           src="{{ product.picture }}" onclick="location.href = '{{ url_for("get_product", product_id=product.id) }}'" class="card-img" alt="Упс">
-    </div>
-    <div class="col-md-8">
-      <div class="card-body">
-        <h5 class="card-title">{{ product.name }}</h5>
-        <p class="card-text">Количество: <input class='inp_price' type="text" value="1">
-        <p class="card-text"><small class="text-muted">{{ product.price }} руб.</small></p>
-      </div>
-    </div>
-  </div>
-</div>
-    {% endif %}
+                    <div class="row no-gutters">
+                        <div class="col-md-4">
+                            <img
+                                    src="{{ product.picture }}"
+                                    onclick="location.href = '{{ url_for("get_product", product_id=product.id) }}'"
+                                    class="card-img" alt="Упс">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ product.name }}</h5>
+                                <p class="card-text">Количество: <input name='index' class='inp_price' type="text"
+                                                                        value="1">
+                                <p class="card-text"><small class="text-muted">{{ product.price }} руб.</small></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
         {% endfor %}
+        <hr>
+        {% if  mes == "backet" %}
+<div class="summ"> Итого: {{summ}}</div>
+            {% endif %}
+        <br>
+        {% if user != 'True' %}
+    <form method="post">
+        <button type="submit" class="registerbtn">Оформить заказ</button>
+    </form>
+    </div>
+            {% else %}
+            <div class="summ">Чтобы заказать игрушки, <a href="/menu/registration/">зарегестрируйтесь</a> или
+                <a href="/menu/login/">войдите</a></div>
+            {% endif %}
+{% else %}
+        {% if  mes == "backet" %}
+<div>В вашей корзине пока нет товаров</div>
+            {% else %}
+     <div>В ваших избранных пока нет товаров</div>
+            {% endif %}
+{% endif %}
+</div>
 </body>
 </html>

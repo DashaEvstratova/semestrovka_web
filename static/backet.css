@@ -110,6 +110,41 @@ body {
     font-family: fantasy;
     font-size: 20px;
 }
+.form {
+    background: #e3d1a8;
+    font-family: 'Nunito', sans-serif;
+    width: 600px;
+    padding: 40px;
+    border-radius: 10px;
+    margin: 60px auto 60px;
+    box-shadow: 14px 14px 20px #cbced1, -14px -14px 20px white;
+}
+.form-container {
+    background: #ecf0f3;
+    font-family: 'Nunito', sans-serif;
+    width: 400px;
+    padding: 40px;
+    border-radius: 10px;
+    margin: 0 auto 15px;
+    box-shadow: 14px 14px 20px #cbced1, -14px -14px 20px white;
+}
+
+.form-container .title {
+    color: #f8daba;
+    font-size: 25px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-align: center;
+    margin: 0 0 20px;
+}
+
+.form-container .form-horizontal .form-group label {
+    font-size: 15px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
 
 button {
     color: #000;
@@ -123,4 +158,17 @@ button {
     box-shadow: 6px 6px 6px #ffffff, -6px -6px 6px #ffffff;
     border: none;
     transition: all 0.5s ease 0s;
+}
+
+
+button:hover,
+button:focus {
+    color: #ffe9d0;
+    letter-spacing: 4px;
+    box-shadow: none;
+    outline: none;
+}
+
+.summ{
+    font-size: 25px;
 }

@@ -23,3 +23,4 @@ def get_toys():
         'products': products,
     }
     return context
+

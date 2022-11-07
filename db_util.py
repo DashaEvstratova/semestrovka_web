@@ -50,7 +50,6 @@ class Database:
 
     def last_id(self, table):
         tables = self.select_max(table)
-        print(tables['max'])
         return tables['max']
 
     def update(self, table, id, parametr, data):

@@ -216,14 +216,55 @@ def bac():
         return res, 302
 
 
+@app.route("/menu/backet/", methods=['POST', 'GET'])
+def backet():
+    if not request.cookies.get('backet'):
+        products = []
+        return render_template("backet.html", products=products, mes='backet')
+    ids = request.cookies.get('backet').split('l')
+    products = []
+    order = ''
+    email = request.cookies.get('user')
+    summ = 0
+    for id in ids:
+        id = int(id)
+        product = db.select('id', id, 'products')
+        summ += product['price']
+        products.append(product)
+        order+= "{" +'id:' + f'{product["id"]}, ' + 'name:' + f'{product["name"]}, ' + 'price:' +\
+                f'{product["price"]}, '  +'count: 1' +"}"
+    if not request.cookies.get('user'):
+        return render_template("backet.html", products=products, mes='backet', user='True', summ=summ)
+    client = db.select('email', email, 'client')['id']
+    if request.method == 'POST':
+        if not db.last_id('squads'):
+            id = 1
+        else:
+            id = db.last_id('squads') +1
+        db.insert('squads', (client, order, id, summ))
+        res = make_response("Cookie Removed")
+        res.set_cookie('backet', order, max_age=0)
+        res.headers['location'] = url_for('order')
+        return res, 302
+    return render_template("backet.html", products = products, mes='backet', summ=summ)
+
+
+@app.route("/menu/order/")
+def order():
+    message = f'Ваш заказ успешно оформлен! Спасибо 😘)'
+    return render_template('order.html', message=message)
+
+
 @app.route("/menu/nlike/", methods=['POST', 'GET'])
 def nlike():
     product_id = request.form['index']
     if request.cookies.get('like'):
+        res = make_response("")
+        res.set_cookie(product_id, 'like', 60 * 60 * 24 * 15)
         like = request.cookies.get('like') + 'l' + str(product_id)
         res = make_response("")
         res.set_cookie("like", like, 60 * 60 * 24 * 15)
-        res.headers['location'] = url_for('get_product', product_id=product_id, like='True')
+        res.headers['location'] = url_for('get_product', product_id=product_id)
         return res, 302
     else:
         like = f"{product_id}"
@@ -232,28 +273,19 @@ def nlike():
         res.headers['location'] = url_for('menu')
         return res, 302
 
-
-@app.route("/menu/backet/", methods=['POST', 'GET'])
-def backet():
-    ids = request.cookies.get('backet').split('l')
-    products = []
-    for id in ids:
-        id = int(id)
-        product = db.select('id', id, 'products')
-        products.append(product)
-    return render_template("backet.html", products = products)
-
-
 # like
 @app.route("/menu/like/")
 def like():
+    if not request.cookies.get('like'):
+        products = []
+        return render_template("backet.html", products=products)
     ids = request.cookies.get('like').split('l')
     products = []
     for id in ids:
         id = int(id)
         product = db.select('id', id, 'products')
         products.append(product)
-    return render_template("backet.html", products=products)
+    return render_template("backet.html", products=products, mes='like')
 
 
 # profil

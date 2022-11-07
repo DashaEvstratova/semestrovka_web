@@ -11,7 +11,7 @@
 
 <h1 id="second">Добро пожаловать!</h1>
 
-<div class="rt"><a
+<div class="rt"><a href="/menu">Меню</a> <a
         href="/menu/toys/">Игрушки</a> <a href="/menu/backet/">Корзина</a> <a href="/menu/like/">Избранное</a>
     {% if not request.cookies.get('user')%}
     <a href="/menu/login/">Вход</a> <a
@@ -21,22 +21,16 @@
         <br>
         <a href="/menu/profil/">Профиль</a>
     {% endif %}
-{% if request.cookies.get('user') == 'admin' %}
-    <a href="/menu/add_product/"> Добавить товар</a>
-    {% endif %}
 </div>
-<div class="picture">
-<p class="thumb">
-        {% for product in products %}
-            <img onclick="location.href = '{{ url_for("get_product", product_id=product.id) }}'"
-                    src='{{ product.picture }}' alt="Упс" onclick="info('1000 рублей')"
-                    width="300"
-                    height="300"
-                    class="right"
-            >
-
-        {% endfor %}
- </p>
+<div class="bubble">
+    <div class="bubble-in">
+    {{ message }}
+    </div>
+</div>
+<div class="imeg">
+<img src="/static/person.jpg" width="400"
+                       height="400">
+</div>
 </div>
 </div>
 </body>
