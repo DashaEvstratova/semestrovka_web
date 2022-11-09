@@ -2,7 +2,7 @@
 <head>
     <meta charset="utf-8">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='product.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/product.css') }}">
     <title>Product</title>
 </head>
 <body>
@@ -43,18 +43,21 @@
         <p>Описание: {{ product.discription }}</p>
         {% if product.status == 'True' %}
             <p>Есть в наличие</p>
+            <div class="btn-group">
             <form action="/menu/bac/" method="post">
                 <input class="btn" type="hidden" name="index" value={{ product.id }}>
                 <input type="image" src="/static/bak.jpg" class="btn" width="50"
                        height="50"
                        class="right">
             </form>
+                <br>
             <form action="/menu/nlike/" method="post">
             <input class="btn" type="hidden" name="index" value={{ product.id }}>
             <input type="image" src="/static/like.jpg" class="btn" width="50"
                    height="50"
                    class="right">
             </form>
+            </div>
         {% else %}
             <p>Нет в наличие</p>
         {% endif %}

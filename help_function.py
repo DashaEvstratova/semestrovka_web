@@ -5,7 +5,6 @@ db = Database()
 def get_products_from_db(user = ''):
     products = db.select_all('products')
     context = {
-        'user':user,
         'products': products,
     }
     return context
@@ -24,3 +23,9 @@ def get_toys():
     }
     return context
 
+#
+# a = {'user': 'sffrw@'}
+#
+#
+#      session['user'] = email
+# session['user']['email'] = bucket, like

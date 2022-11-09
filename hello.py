@@ -36,6 +36,9 @@ def registration():
         password = request.form.get('psw')
         rep_password = request.form.get('psw-repeat')
         id = db.last_id('client') + 1
+        emails = db.select_something('client', 'email')
+        if email in emails:
+            error = 'Пользователь с таким логином уже зарегестрирован'
         if password != rep_password:
             error = 'Пароли не совпадают'
         elif ('@' not in email or '.' not in email) and email != 'admin':
@@ -48,7 +51,7 @@ def registration():
             res = make_response("")
             res.set_cookie("user", email, 60 * 60 * 24 * 15)
             res.headers['location'] = url_for('menu')
-            return res, 302
+            return url_for('menu'), 302
         context = {'error': error,
                    'email': email,
                    'name': name,
@@ -152,10 +155,12 @@ def add_product():
     name, discription, price, picture= '', '', '', ''
     if request.method == 'POST':
         name = request.form.get('name')
-        picture = request.form.get('picture')
+        picture = '/static/'+ request.form.get('picture')
         price = request.form.get('price')
         discription = request.form.get('discription')
         id = db.last_id('products') + 1
+        status = 'True'
+        print(picture)
         if not name:
             error = 'Поле название не заполнено'
         elif not discription:
@@ -165,7 +170,7 @@ def add_product():
         elif not picture:
             error = 'Поле картинка не заполнено'
         if not error:
-            a = (id, name, discription, price, picture)
+            a = (id, name, discription, price, picture, status)
             db.insert('products', a)
             return redirect(url_for('menu'), 301)
     context = {'error': error,
@@ -272,6 +277,7 @@ def nlike():
         res.set_cookie("like", like, 60 * 60 * 24 * 15)
         res.headers['location'] = url_for('menu')
         return res, 302
+
 
 # like
 @app.route("/menu/like/")

@@ -2,8 +2,18 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='main.css') }}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/main.css') }}">
+    <style>
+        .scale {
+            transition: 1s;
+        }
+
+        .scale:hover {
+            transform: scale(1.2);
+        }
+    </style>
     <title>Меню</title>
 </head>
 <body>
@@ -13,30 +23,30 @@
 
 <div class="rt"><a
         href="/menu/toys/">Игрушки</a> <a href="/menu/backet/">Корзина</a> <a href="/menu/like/">Избранное</a>
-    {% if not request.cookies.get('user')%}
-    <a href="/menu/login/">Вход</a> <a
-        href="/menu/registration/">Регистрация</a>
-{% else %}
-    <a href="/menu/logout/">Выход</a>
+    {% if not request.cookies.get('user') %}
+        <a href="/menu/login/">Вход</a> <a
+            href="/menu/registration/">Регистрация</a>
+    {% else %}
+        <a href="/menu/logout/">Выход</a>
         <br>
         <a href="/menu/profil/">Профиль</a>
     {% endif %}
-{% if request.cookies.get('user') == 'admin' %}
-    <a href="/menu/add_product/"> Добавить товар</a>
+    {% if request.cookies.get('user') == 'admin' %}
+        <a href="/menu/add_product/"> Добавить товар</a>
     {% endif %}
 </div>
 <div class="picture">
-<p class="thumb">
+    <p class="thumb">
         {% for product in products %}
             <img onclick="location.href = '{{ url_for("get_product", product_id=product.id) }}'"
-                    src='{{ product.picture }}' alt="Упс" onclick="info('1000 рублей')"
-                    width="300"
-                    height="300"
-                    class="right"
+                 src='{{ product.picture }}' alt="Упс"
+                 width="300"
+                 height="300"
+                 class="scale"
             >
 
         {% endfor %}
- </p>
+    </p>
 </div>
 </div>
 </body>

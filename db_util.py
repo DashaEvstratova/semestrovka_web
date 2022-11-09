@@ -25,9 +25,18 @@ class Database:
         return self.help_select()
 
     def select(self, parametr, data, table):
-
         self.cur.execute(f"SELECT * FROM {table} WHERE {parametr} ='{data}';")
         return self.help_select()
+
+    def select_something(self, table, parametr):
+        self.cur.execute(f"SELECT {parametr} FROM {table};")
+        a = self.help_select()
+        res = []
+        for i in a:
+            res.append(i[parametr])
+        return res
+
+
 
     def help_select(self):
         data = self.prepare_data(self.cur.fetchall())
