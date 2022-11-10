@@ -9,15 +9,16 @@ def get_products_from_db(user = ''):
     }
     return context
 
-def get_sets_from_db(name):
-    products = db.select('name', name, 'products')
+def get_sets_from_db(parametr, data, table):
+    products = db.select(parametr, data, table)
     context = {
         'products': products,
     }
     return context
 
-def get_toys():
-    products = db.select_not()
+
+def get_toys(parametr='id', how='ASC'):
+    products = db.select_not(parametr, how)
     context = {
         'products': products,
     }

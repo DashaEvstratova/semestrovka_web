@@ -102,8 +102,20 @@ def logout():
 
 
 # toys
-@app.route("/menu/toys/")
+@app.route("/menu/toys/", methods=['POST', 'GET'])
 def toys():
+    if request.method == 'POST':
+        selct = request.form['filtr']
+        print(selct)
+        if selct == 'None':
+             context = get_toys()
+        elif selct == 'price_little':
+            context = get_toys('price')
+        elif selct == 'price_big':
+            context = get_toys('price', 'DESC')
+        elif selct == 'Es_gibt':
+            context = get_sets_from_db('status', 'True', 'products')
+        return render_template("toys.html", **context)
     context = get_toys()
     return render_template("toys.html", **context)
 
@@ -111,7 +123,7 @@ def toys():
 # sets
 @app.route("/menu/sets/")
 def sets():
-    context = get_sets_from_db('Новогодний набор')
+    context = get_sets_from_db('name', 'Новогодний набор', 'products')
     return render_template("sets.html", **context)
 
 
@@ -160,7 +172,6 @@ def add_product():
         discription = request.form.get('discription')
         id = db.last_id('products') + 1
         status = 'True'
-        print(picture)
         if not name:
             error = 'Поле название не заполнено'
         elif not discription:
@@ -180,7 +191,7 @@ def add_product():
                    'picture': picture}
     return render_template("product_add.html", **context)
 
-'''
+
 @app.route("/menu/<int:product_id>/reduct_product/", methods=['POST', 'GET'])
 def reduct_product(product_id):
     product = db.select('id', product_id, 'products')
@@ -189,35 +200,45 @@ def reduct_product(product_id):
         name = request.form.get('name')
         discription = request.form.get('discription')
         price = request.form.get('price')
-        picture = request.form.get('picture')
-        if name != product['name']:
+        picture = '/static/' + str(request.form.get('picture'))
+        res = False
+        if name != product['name'] and name is not None:
             db.update('products', id, 'name', name)
-        if discription != product['discription']:
+            res = True
+        if discription != product['discription'] and discription is not None:
             db.update('products', id, 'discription', discription)
-        if price != product['price']:
+            res = True
+        if price != product['price'] and price is not None:
             db.update('products', id, 'price', price)
-        if picture != product['picture']:
+            res = True
+        if picture != product['picture'] and picture is not None:
             db.update('products', id, 'picture', picture)
-        return redirect(url_for('get_product', product_id=id), 301)
+            res = True
+        if res:
+            return redirect(url_for('get_product', product_id=id), 301)
+        else:
+            return render_template("reduct_product.html", product=product)
     return render_template("reduct_product.html", product=product)
-'''
+
 
 
 # backet
 @app.route("/menu/bac/", methods=['POST', 'GET'])
 def bac():
     product_id = request.form['index']
-    if request.cookies.get('backet'):
+    if request.cookies.get('backet') and product_id not in request.cookies.get('backet'):
         backet = request.cookies.get('backet') + 'l' + str(product_id)
         res = make_response("")
         res.set_cookie("backet", backet, 60 * 60 * 24 * 15)
-        res.headers['location'] = url_for('menu')
+        res.headers['location'] = url_for('get_product', product_id=product_id)
         return res, 302
+    elif product_id in request.cookies.get('backet'):
+        return redirect(url_for('get_product', product_id=product_id), 301)
     else:
         backet = f"{product_id}"
         res = make_response("")
         res.set_cookie("backet", backet, 60 * 60 * 24 * 15)
-        res.headers['location'] = url_for('menu')
+        res.headers['location'] = url_for('get_product', product_id=product_id)
         return res, 302
 
 

@@ -20,8 +20,8 @@ class Database:
         self.cur.execute(f"SELECT * FROM {table} ORDER BY id")
         return self.help_select()
 
-    def select_not(self):
-        self.cur.execute(f"SELECT * FROM products WHERE name !='Процесс'ORDER BY id;")
+    def select_not(self, parametr, how):
+        self.cur.execute(f"SELECT * FROM products WHERE name !='Процесс'ORDER BY {parametr} {how};")
         return self.help_select()
 
     def select(self, parametr, data, table):
@@ -35,7 +35,6 @@ class Database:
         for i in a:
             res.append(i[parametr])
         return res
-
 
 
     def help_select(self):

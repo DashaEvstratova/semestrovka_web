@@ -1,4 +1,4 @@
-<html>
+<html xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="utf-8">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
@@ -21,6 +21,15 @@
 <div class="rt"><a
         href="/menu">Меню</a> <a href="/menu/sets/">Наборы</a> <a href="/menu/process/">Процесс</a> <a
         href="/menu/backet/">Корзина</a> <a href="/menu/like/">Избранное</a>
+    <form action="{{ url_for("toys") }}" method="post">
+        <select name="filtr">
+            <option value="None" selected>По умолчанию</option>
+            <option value="price_little">По цене увеличения</option>
+            <option value="price_big">По цене уменьшения</option>
+            <option value="Es_gibt">По наличию</option>
+        </select>
+        <input type="submit" value="Фильтр" >
+    </form>
 </div>
 <div class="picture">
     <p class="thumb">
