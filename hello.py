@@ -137,9 +137,16 @@ def process():
 # product
 @app.route("/menu/<int:product_id>")
 def get_product(product_id):
+    email = request.cookies.get('user')
     product = db.select('id', product_id, 'products')
+    like = '/static/nlike.jpg'
+    if request.cookies.get(f'like{email}'):
+        ids = request.cookies.get(f'like{email}').split('l')
+        for id in ids:
+            if int(id) == product['id']:
+                like = '/static/like.jpg'
     if len(product):
-        return render_template("product.html", title=product['name'], product=product)
+        return render_template("product.html", title=product['name'], product=product, like=like)
 
     # если нужный фильм не найден, возвращаем шаблон с ошибкой
     return render_template("error.html", error="Такой игрушки не существует в системе")
@@ -221,36 +228,55 @@ def reduct_product(product_id):
     return render_template("reduct_product.html", product=product)
 
 
+@app.route("/menu/del/bac/", methods=['POST', 'GET'])
+def del_bac():
+    email = request.cookies.get('user')
+    product_id = request.form['del']
+    ids = request.cookies.get(f'bucket{email}').split('l')
+    bucket = ''
+    for id in ids:
+        if id != product_id:
+            bucket += id
+            bucket += 'l'
+    bucket = bucket[:-1]
+    res = make_response("")
+    res.set_cookie(f"bucket{email}", bucket, 60 * 60 * 24 * 15)
+    res.headers['location'] = url_for('backet')
+    return res, 302
+
 
 # backet
 @app.route("/menu/bac/", methods=['POST', 'GET'])
 def bac():
+    email = request.cookies.get('user')
     product_id = request.form['index']
-    if request.cookies.get('backet') and product_id not in request.cookies.get('backet'):
-        backet = request.cookies.get('backet') + 'l' + str(product_id)
+    if request.cookies.get(f'bucket{email}') and product_id not in request.cookies.get(f'bucket{email}'):
+        backet = request.cookies.get(f'bucket{email}') + 'l' + str(product_id)
         res = make_response("")
-        res.set_cookie("backet", backet, 60 * 60 * 24 * 15)
+        res.set_cookie(f'bucket{email}', backet, 60 * 60 * 24 * 15)
         res.headers['location'] = url_for('get_product', product_id=product_id)
         return res, 302
-    elif product_id in request.cookies.get('backet'):
+    elif request.cookies.get(f'bucket{email}') and product_id in request.cookies.get(f'bucket{email}'):
         return redirect(url_for('get_product', product_id=product_id), 301)
     else:
         backet = f"{product_id}"
         res = make_response("")
-        res.set_cookie("backet", backet, 60 * 60 * 24 * 15)
+        res.set_cookie(f'bucket{email}', backet, 60 * 60 * 24 * 15)
         res.headers['location'] = url_for('get_product', product_id=product_id)
         return res, 302
 
 
 @app.route("/menu/backet/", methods=['POST', 'GET'])
 def backet():
-    if not request.cookies.get('backet'):
+    email=request.cookies.get('user')
+    if not request.cookies.get(f'bucket{email}'):
         products = []
-        return render_template("backet.html", products=products, mes='backet')
-    ids = request.cookies.get('backet').split('l')
+        if email:
+            user = 'True'
+        return render_template("backet.html", products=products, mes='backet', count='True', user=user)
+    ids = request.cookies.get(f'bucket{email}').split('l')
     products = []
     order = ''
-    email = request.cookies.get('user')
     summ = 0
     for id in ids:
         id = int(id)
@@ -260,7 +286,7 @@ def backet():
         order+= "{" +'id:' + f'{product["id"]}, ' + 'name:' + f'{product["name"]}, ' + 'price:' +\
                 f'{product["price"]}, '  +'count: 1' +"}"
     if not request.cookies.get('user'):
-        return render_template("backet.html", products=products, mes='backet', user='True', summ=summ)
+        return render_template("backet.html", products=products, mes='backet', user='False', summ=summ)
     client = db.select('email', email, 'client')['id']
     if request.method == 'POST':
         if not db.last_id('squads'):
@@ -269,10 +295,10 @@ def backet():
             id = db.last_id('squads') +1
         db.insert('squads', (client, order, id, summ))
         res = make_response("Cookie Removed")
-        res.set_cookie('backet', order, max_age=0)
+        res.set_cookie(f'bucket{email}', order, max_age=0)
         res.headers['location'] = url_for('order')
         return res, 302
-    return render_template("backet.html", products = products, mes='backet', summ=summ)
+    return render_template("backet.html", products = products, mes='backet', summ=summ, user='True')
 
 
 @app.route("/menu/order/")
@@ -284,35 +310,64 @@ def order():
 @app.route("/menu/nlike/", methods=['POST', 'GET'])
 def nlike():
     product_id = request.form['index']
-    if request.cookies.get('like'):
+    email = request.cookies.get('user')
+    if request.cookies.get(f'like{email}')and product_id not in request.cookies.get(f'like{email}'):
+        like = request.cookies.get(f'like{email}') + 'l' + str(product_id)
         res = make_response("")
-        res.set_cookie(product_id, 'like', 60 * 60 * 24 * 15)
-        like = request.cookies.get('like') + 'l' + str(product_id)
+        res.set_cookie(f"like{email}", like, 60 * 60 * 24 * 15)
+        res.headers['location'] = url_for('get_product', product_id=product_id)
+        return res, 302
+    elif request.cookies.get(f'like{email}') and product_id in request.cookies.get(f'like{email}'):
+        ids = request.cookies.get(f'like{email}').split('l')
+        like = ''
+        for id in ids:
+            if id != product_id:
+                like +=id
+                like +='l'
+        like = like[:-1]
         res = make_response("")
-        res.set_cookie("like", like, 60 * 60 * 24 * 15)
+        res.set_cookie(f"like{email}", like, 60 * 60 * 24 * 15)
         res.headers['location'] = url_for('get_product', product_id=product_id)
         return res, 302
     else:
         like = f"{product_id}"
         res = make_response("")
-        res.set_cookie("like", like, 60 * 60 * 24 * 15)
-        res.headers['location'] = url_for('menu')
+        res.set_cookie(f"like{email}", like, 60 * 60 * 24 * 15)
+        res.headers['location'] = url_for('get_product', product_id=product_id)
         return res, 302
+
+
+@app.route("/menu/del/like/", methods=['POST', 'GET'])
+def del_like():
+    email = request.cookies.get('user')
+    product_id = request.form['del']
+    ids = request.cookies.get(f'like{email}').split('l')
+    like = ''
+    for id in ids:
+        if id != product_id:
+            like += id
+            like += 'l'
+    like = like[:-1]
+    res = make_response("")
+    res.set_cookie(f"like{email}", like, 60 * 60 * 24 * 15)
+    res.headers['location'] = url_for('like')
+    return res, 302
 
 
 # like
 @app.route("/menu/like/")
 def like():
-    if not request.cookies.get('like'):
+    email = request.cookies.get('user')
+    if not request.cookies.get(f'like{email}'):
         products = []
-        return render_template("backet.html", products=products)
-    ids = request.cookies.get('like').split('l')
+        return render_template("backet.html", products=products, mes='like', user='True', count='True')
+    ids = request.cookies.get(f'like{email}').split('l')
     products = []
     for id in ids:
         id = int(id)
         product = db.select('id', id, 'products')
         products.append(product)
-    return render_template("backet.html", products=products, mes='like')
+    return render_template("backet.html", products=products, mes='like', user='True')
 
 
 # profil
@@ -320,9 +375,18 @@ def like():
 def profil():
     email = request.cookies.get('user')
     user = db.select('email', email, 'client')
+    order = db.select('id_client', user['id'], 'squads')
+    user_product = []
+    if order:
+        products = order['products'][:-1][1:].split('}{')
+        print(products)
+        for product in products:
+            id = product.split(',')[0].split(':')[-1]
+            producty = db.select('id', id, 'products')
+            user_product.append(producty)
     if request.method=='POST':
         return redirect(url_for('reduct_profil'), 301)
-    return render_template("profil.html", user=user)
+    return render_template("profil.html", user=user, products=user_product)
 
 
 @app.route("/menu/reduct_profil/", methods=['POST', 'GET'])
