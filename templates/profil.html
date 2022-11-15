@@ -1,57 +1,57 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/product.css') }}">
     <title>Product</title>
 </head>
 <body>
 <h1 id="first">Fetrisa_toy</h1>
 <div class="rt"><a
-        href="/menu">Меню</a> <a href="/menu/toys/">Игрушки</a> <a href="/menu/sets/">Наборы</a> <a href="/menu/backet/">Корзина</a>
+        href="/menu">Меню</a> <a href="/menu/toys/">Игрушки</a> <a href="/menu/sets/">Наборы</a> <a
+        href="/menu/backet/">Корзина</a>
     <a href="/menu/like/">Избранное</a>
 </div>
 <div class="all">
     <p class="thumb">
     <div class="discripion1">
-        <p>Имя: {{ user.name}}</p>
-    <p>Email: {{ user.email }}</p>
-    <p>Фамилия: {{ user.second_name }}</p>
-    <p>Дата рождения: {{ user.birthday }}</p>
-    <p>Номер телефона: {{ user.phone }}</p>
-    </p>
-    <br>
-{% if products %}
-    <hr>
-    <p>Ваши ваказы:</p>
-    {% for product in products %}
-    <div class="card mb-3" style="max-width: 400px; margin-top: 20px;  margin-left: auto;
+        <p>Имя: {{ user.name }}</p>
+        <p>Email: {{ user.email }}</p>
+        <p>Фамилия: {{ user.second_name }}</p>
+        <p>Дата рождения: {{ user.birthday }}</p>
+        <p>Номер телефона: {{ user.phone }}</p>
+        </p>
+        <br>
+        {% if products %}
+            <hr>
+            <p>Ваши ваказы:</p>
+            {% for product in products %}
+                <div class="card mb-3" style="max-width: 400px; margin-top: 20px;  margin-left: auto;
     margin-right: auto;">
                     <div class="row no-gutters">
                         <div class="col-md-4">
                             <img
                                     src="{{ product.picture }}"
                                     onclick="location.href = '{{ url_for("get_product", product_id=product.id) }}'"
-                                    class="card-img" alt="Упс" height="170">
+                                    class="card-img" alt="Упс" height="150">
                         </div>
                         <div class="col-md-8">
                             <div class="card-body">
                                 <p class="card-title">{{ product.name }}</p>
                                 <h5 class="card-text">{{ product.discription }}</h5>
-                                    <p class="card-text"><small class="text-muted">{{ product.price }} руб.</small>
+                                <p class="card-text"><small class="text-muted">{{ product.price }} руб.</small>
                             </div>
                         </div>
                     </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+        <br>
+        <form method="post">
+            <button type="submit" class="registerbtn">Редактировать профиль</button>
+        </form>
     </div>
-        {% endfor %}
-{% endif %}
-<br>
-<br>
-    <form method="post">
-     <button type="submit" class="registerbtn">Редактировать профиль</button>
-    </form>
-</div>
-</div>
 </div>
 </body>
 </html>

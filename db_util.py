@@ -1,5 +1,6 @@
 import psycopg2
 
+
 class Database:
     def __init__(self):
         self.con = psycopg2.connect(
@@ -36,7 +37,6 @@ class Database:
             res.append(i[parametr])
         return res
 
-
     def help_select(self):
         data = self.prepare_data(self.cur.fetchall())
         if len(data) == 1:
@@ -49,7 +49,6 @@ class Database:
             column_names = [desc[0] for desc in self.cur.description]
             for row in data:
                 products += [{c_name: row[key] for key, c_name in enumerate(column_names)}]
-
         return products
 
     def select_max(self, table):

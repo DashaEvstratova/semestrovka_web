@@ -3,7 +3,6 @@ a {
     text-decoration: none;
 }
 
-
 * {
     margin: 0;
     padding: 0;
@@ -27,7 +26,6 @@ body {
     margin-top: 10px;
 }
 
-
 #first {
     border: 0px solid #bba990;
     padding: 8px;
@@ -50,7 +48,7 @@ body {
     margin-top: 10px;
 }
 
- .btn-group button {
+.btn-group button {
     padding: 10px 24px;
     cursor: pointer;
     float: left;
@@ -77,6 +75,7 @@ body {
     margin-right: 20%;
     margin-top: 40px;;
 }
+
 .all {
     margin-bottom: 90px;
     margin-top: 50px;
@@ -97,7 +96,7 @@ body {
     margin-top: 40px;
 }
 
-.discripion{
+.discripion {
     margin-top: 1px;
     margin-bottom: 20px;
     margin-right: 50px;
@@ -110,7 +109,7 @@ body {
     font-size: 30px;
 }
 
-.discripion1{
+.discripion1 {
     margin-top: 30px;
     margin-bottom: 20px;
     margin-right: 50px;
@@ -120,7 +119,7 @@ body {
     font-size: 25px;
 }
 
-.btn{
+.btn {
     background: #c0a078;
     color: #000;
     font-family: fantasy;
@@ -171,8 +170,4 @@ button:focus {
     letter-spacing: 4px;
     box-shadow: none;
     outline: none;
-}
-
-.card{
-
 }

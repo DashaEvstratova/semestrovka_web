@@ -16,7 +16,6 @@ body {
     margin-top: 10px;
 }
 
-
 #first {
     border: 0px solid #bba990;
     padding: 8px;
@@ -37,6 +36,7 @@ body {
     margin: 30px auto 15px;
     box-shadow: 14px 14px 20px #cbced1, -14px -14px 20px white;
 }
+
 .form-container {
     background: #ecf0f3;
     font-family: 'Nunito', sans-serif;

@@ -16,9 +16,11 @@ def products_list():
     return redirect(url_for('menu'), 301)
 
 
-@app.route("/menu")
+@app.route("/menu/")
 def menu(user=''):
     context = get_products_from_db(user)
+    if request.form.get('email'):
+        context = get_products_from_db(request.form.get('email'))
     return render_template("main.html", **context)
 
 
@@ -51,7 +53,7 @@ def registration():
             res = make_response("")
             res.set_cookie("user", email, 60 * 60 * 24 * 15)
             res.headers['location'] = url_for('menu')
-            return url_for('menu'), 302
+            return res, 302
         context = {'error': error,
                    'email': email,
                    'name': name,
@@ -106,9 +108,8 @@ def logout():
 def toys():
     if request.method == 'POST':
         selct = request.form['filtr']
-        print(selct)
         if selct == 'None':
-             context = get_toys()
+            context = get_toys()
         elif selct == 'price_little':
             context = get_toys('price')
         elif selct == 'price_big':
@@ -130,7 +131,7 @@ def sets():
 # process
 @app.route("/menu/process/")
 def process():
-    contex = get_sets_from_db("Процесс")
+    contex = get_sets_from_db('name', "Процесс", "products")
     return render_template("process.html", **contex)
 
 
@@ -171,10 +172,10 @@ def restart_product(product_id):
 @app.route("/menu/add_product/", methods=['POST', 'GET'])
 def add_product():
     error = ''
-    name, discription, price, picture= '', '', '', ''
+    name, discription, price, picture = '', '', '', ''
     if request.method == 'POST':
         name = request.form.get('name')
-        picture = '/static/'+ request.form.get('picture')
+        picture = '/static/' + request.form.get('picture')
         price = request.form.get('price')
         discription = request.form.get('discription')
         id = db.last_id('products') + 1
@@ -192,10 +193,10 @@ def add_product():
             db.insert('products', a)
             return redirect(url_for('menu'), 301)
     context = {'error': error,
-                   'discription': discription,
-                   'name': name,
-                   'price': price,
-                   'picture': picture}
+               'discription': discription,
+               'name': name,
+               'price': price,
+               'picture': picture}
     return render_template("product_add.html", **context)
 
 
@@ -254,23 +255,24 @@ def bac():
         backet = request.cookies.get(f'bucket{email}') + 'l' + str(product_id)
         res = make_response("")
         res.set_cookie(f'bucket{email}', backet, 60 * 60 * 24 * 15)
-        res.headers['location'] = url_for('get_product', product_id=product_id)
+        res.headers['location'] = url_for('toys')
         return res, 302
     elif request.cookies.get(f'bucket{email}') and product_id in request.cookies.get(f'bucket{email}'):
-        return redirect(url_for('get_product', product_id=product_id), 301)
+        return redirect(url_for('toys'), 301)
     else:
         backet = f"{product_id}"
         res = make_response("")
         res.set_cookie(f'bucket{email}', backet, 60 * 60 * 24 * 15)
-        res.headers['location'] = url_for('get_product', product_id=product_id)
+        res.headers['location'] = url_for('toys')
         return res, 302
 
 
 @app.route("/menu/backet/", methods=['POST', 'GET'])
 def backet():
-    email=request.cookies.get('user')
+    email = request.cookies.get('user')
     if not request.cookies.get(f'bucket{email}'):
         products = []
+        user = 'False'
         if email:
             user = 'True'
         return render_template("backet.html", products=products, mes='backet', count='True', user=user)
@@ -279,12 +281,17 @@ def backet():
     order = ''
     summ = 0
     for id in ids:
-        id = int(id)
-        product = db.select('id', id, 'products')
-        summ += product['price']
+        product_id = id
+        count = 1
+        if 'c' in id:
+            id = id.split('c')
+            product_id = id[0]
+            count = id[1]
+        product = db.select('id', product_id, 'products')
+        summ += (product['price'] * int(count))
         products.append(product)
-        order+= "{" +'id:' + f'{product["id"]}, ' + 'name:' + f'{product["name"]}, ' + 'price:' +\
-                f'{product["price"]}, '  +'count: 1' +"}"
+        order += 'id:' + f'{product["id"]} ' + 'name:' + f'{product["name"]} ' + 'price:' + \
+                 f'{product["price"]}' + ";"
     if not request.cookies.get('user'):
         return render_template("backet.html", products=products, mes='backet', user='False', summ=summ)
     client = db.select('email', email, 'client')['id']
@@ -292,13 +299,13 @@ def backet():
         if not db.last_id('squads'):
             id = 1
         else:
-            id = db.last_id('squads') +1
+            id = db.last_id('squads') + 1
         db.insert('squads', (client, order, id, summ))
         res = make_response("Cookie Removed")
         res.set_cookie(f'bucket{email}', order, max_age=0)
         res.headers['location'] = url_for('order')
         return res, 302
-    return render_template("backet.html", products = products, mes='backet', summ=summ, user='True')
+    return render_template("backet.html", products=products, mes='backet', summ=summ, user='True')
 
 
 @app.route("/menu/order/")
@@ -311,7 +318,7 @@ def order():
 def nlike():
     product_id = request.form['index']
     email = request.cookies.get('user')
-    if request.cookies.get(f'like{email}')and product_id not in request.cookies.get(f'like{email}'):
+    if request.cookies.get(f'like{email}') and product_id not in request.cookies.get(f'like{email}'):
         like = request.cookies.get(f'like{email}') + 'l' + str(product_id)
         res = make_response("")
         res.set_cookie(f"like{email}", like, 60 * 60 * 24 * 15)
@@ -322,8 +329,8 @@ def nlike():
         like = ''
         for id in ids:
             if id != product_id:
-                like +=id
-                like +='l'
+                like += id
+                like += 'l'
         like = like[:-1]
         res = make_response("")
         res.set_cookie(f"like{email}", like, 60 * 60 * 24 * 15)
@@ -377,14 +384,41 @@ def profil():
     user = db.select('email', email, 'client')
     order = db.select('id_client', user['id'], 'squads')
     user_product = []
-    if order:
-        products = order['products'][:-1][1:].split('}{')
-        print(products)
-        for product in products:
-            id = product.split(',')[0].split(':')[-1]
-            producty = db.select('id', id, 'products')
-            user_product.append(producty)
-    if request.method=='POST':
+    ids = []
+    if len(order) > 4:
+        for product in order:
+            product = product['products'][:-1]
+            if ';' in product:
+                product = product.split(';')
+                for produc in product:
+                    id = produc.split(' ')[0].split(':')[-1]
+                    if id not in ids:
+                        ids.append(id)
+                        producty = db.select('id', id, 'products')
+                        user_product.append(producty)
+            else:
+                id = product.split(' ')[0].split(':')[-1]
+                if id not in ids:
+                    ids.append(id)
+                    producty = db.select('id', id, 'products')
+                    user_product.append(producty)
+    elif len(order) == 4:
+        order = order['products'][:-1]
+        if ';' in order:
+            product = order.split(';')
+            for produc in product:
+                id = produc.split(' ')[0].split(':')[-1]
+                if id not in ids:
+                    ids.append(id)
+                    producty = db.select('id', id, 'products')
+                    user_product.append(producty)
+        else:
+            id = order.split(' ')[0].split(':')[-1]
+            if id not in ids:
+                ids.append(id)
+                producty = db.select('id', id, 'products')
+                user_product.append(producty)
+    if request.method == 'POST':
         return redirect(url_for('reduct_profil'), 301)
     return render_template("profil.html", user=user, products=user_product)
 
@@ -395,7 +429,7 @@ def reduct_profil():
     email = request.cookies.get('user')
     user = db.select('email', email, 'client')
     id = user['id']
-    if request.method=='POST':
+    if request.method == 'POST':
         email = request.form.get('email')
         name = request.form.get('name')
         second_name = request.form.get('second-name')

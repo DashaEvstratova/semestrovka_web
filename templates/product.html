@@ -1,18 +1,20 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/product.css') }}">
     <title>Product</title>
 </head>
 <body>
 <h1 id="first">Fetrisa_toy</h1>
 <div class="rt"><a
-        href="/menu">Меню</a> <a href="/menu/toys/">Игрушки</a> <a href="/menu/sets/">Наборы</a> <a href="/menu/backet/">Корзина</a>
+        href="/menu">Меню</a> <a href="/menu/toys/">Игрушки</a> <a href="/menu/sets/">Наборы</a> <a
+        href="/menu/backet/">Корзина</a>
     <a href="/menu/like/">Избранное</a>
 </div>
 <div class="all">
-<div id="therd"><strong>{{ product.name }}</strong></div>
+    <div id="therd"><strong>{{ product.name }}</strong></div>
     <p class="thumb">
         <img
                 src='{{ product.picture }}' alt="Упс"
@@ -21,14 +23,14 @@
                 class="right">
     </p>
     <div class="discripion">
-    {% if request.cookies.get('user') == 'admin' and product.status == 'False'%}
+        {% if request.cookies.get('user') == 'admin' and product.status == 'False' %}
             <br>
             <form action="/menu/{{ product.id }}/restart_product/" method="POST">
                 <input type="submit" class="btn btn-dark" value="Востановить товар">
             </form>
             <br>
         {% endif %}
-        {% if request.cookies.get('user') == 'admin' and product.status == 'True'%}
+        {% if request.cookies.get('user') == 'admin' and product.status == 'True' %}
             <br>
             <form action="/menu/{{ product.id }}/reduct_product/" method="POST">
                 <input type="submit" class="btn btn-dark" value="Редактирование товара">
@@ -39,30 +41,29 @@
             </form>
             <br>
         {% endif %}
-        <p>Цена: {{ product.price }}</p>
+        {% if product.price != 0 %}
+            <p>Цена: {{ product.price }}</p>
+        {% endif %}
         <p>Описание: {{ product.discription }}</p>
-        {% if product.status == 'True' %}
+        {% if product.status == 'True' and product.price != 0 %}
             <p>Есть в наличие</p>
             <div class="btn-group">
-            <form action="/menu/bac/" method="post">
-                <input class="btn" type="hidden" name="index" value={{ product.id }}>
-                <input type="image" src="/static/bak.jpg" class="btn" width="80"
-                       height="80"
-                       class="right">
-                <p>   </p>
-            </form>
-            <form action="/menu/nlike/" method="post">
-            <input class="btn" type="hidden" name="index" value={{ product.id }}>
-            <input type="image" src={{ like }} class="btn" width="83"
-                   height="80"
-                   class="right">
-            </form>
+                <form action="/menu/bac/" method="post">
+                    <input class="btn" type="hidden" name="index" value={{ product.id }}>
+                    <input type="image" src="/static/bak.jpg" class="btn" width="80"
+                           height="80">
+                    <p></p>
+                </form>
+                <form action="/menu/nlike/" method="post" id="myForm">
+                    <input class="btn" type="hidden" name="index" value={{ product.id }}>
+                    <input type="image" src={{ like }} class="btn" width="83"
+                           height="80">
+                </form>
             </div>
-        {% else %}
+        {% elif product.status == 'False' %}
             <p>Нет в наличие</p>
         {% endif %}
     </div>
-</div>
 </div>
 </body>
 </html>

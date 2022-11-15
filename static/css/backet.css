@@ -3,7 +3,6 @@ a {
     text-decoration: none;
 }
 
-
 * {
     margin: 0;
     padding: 0;
@@ -26,7 +25,6 @@ body {
     font-size: 40px;
     margin-top: 10px;
 }
-
 
 #first {
     border: 0px solid #bba990;
@@ -61,6 +59,7 @@ body {
     margin-right: 20%;
     margin-top: 80px;;
 }
+
 .all {
     margin-bottom: 90px;
     margin-top: 50px;
@@ -81,7 +80,7 @@ body {
     margin-top: 40px;
 }
 
-.discripion{
+.discripion {
     margin-top: 1px;
     margin-bottom: 20px;
     margin-right: 50px;
@@ -94,7 +93,7 @@ body {
     font-size: 30px;
 }
 
-.discripion1{
+.discripion1 {
     margin-top: 30px;
     margin-bottom: 20px;
     margin-right: 50px;
@@ -104,12 +103,13 @@ body {
     font-size: 25px;
 }
 
-.btn{
+.btn {
     background: #d0b184;
     color: #000;
     font-family: fantasy;
     font-size: 20px;
 }
+
 .form {
     background: #e3d1a8;
     font-family: 'Nunito', sans-serif;
@@ -119,6 +119,7 @@ body {
     margin: 60px auto 60px;
     box-shadow: 14px 14px 20px #cbced1, -14px -14px 20px white;
 }
+
 .form-container {
     background: #ecf0f3;
     font-family: 'Nunito', sans-serif;
@@ -145,7 +146,6 @@ body {
     text-transform: uppercase;
 }
 
-
 button {
     color: #000;
     background-color: #a4865a;
@@ -160,7 +160,6 @@ button {
     transition: all 0.5s ease 0s;
 }
 
-
 button:hover,
 button:focus {
     color: #ffe9d0;
@@ -169,10 +168,14 @@ button:focus {
     outline: none;
 }
 
-.summ{
+.summ {
     font-size: 25px;
 }
 
-.del{
+.del {
     font-size: 15px;;
+}
+
+#pyat::-webkit-inner-spin-button {
+    opacity: 1;
 }

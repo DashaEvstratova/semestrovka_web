@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/login_registr.css') }}">
     <title>Меню</title>
 </head>
@@ -12,24 +13,24 @@
 <div class='form'>
     <form method="post">
         <div class="container">
-<p>{{ error }}</p>
+            <p>{{ error }}</p>
             <br>
             <label for="name"><b>Название товара</b></label>
             <input type="text" placeholder="Name" name="name" value="{{ name }}" required>
             <br>
             <br>
             <label for="discription"><b>Описание</b></label>
-            <input type="text" placeholder="discription" name="discription" value="{{ discription}}" required>
+            <input type="text" placeholder="discription" name="discription" value="{{ discription }}" required>
             <br>
             <br>
             <label for="price"><b>Цена</b></label>
-            <input type="text" placeholder="price" name="price" value="{{price}}" required>
+            <input type="text" placeholder="price" name="price" value="{{ price }}" required>
             <br>
             <br>
             <label for="picture"><b>Картинка</b></label>
-            <input type="file" placeholder="Адрес картинки" name="picture" value="{{picture}}" required>
-    <br><br>
-    <button>Добавить товар</button>
+            <input type="file" placeholder="Адрес картинки" name="picture" value="{{ picture }}" required>
+            <br><br>
+            <button>Добавить товар</button>
         </div>
     </form>
 </div>
