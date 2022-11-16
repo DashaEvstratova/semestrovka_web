@@ -39,6 +39,7 @@ def registration():
         second_name = request.form.get('second-name')
         birthday = request.form.get('birthday')
         phone = request.form.get('phone')
+        adress = request.form.get('adress')
         row_password = request.form.get('psw')
         password = generate_password_hash(request.form.get('psw'))
         rep_password = generate_password_hash(request.form.get('psw-repeat'))
@@ -53,7 +54,7 @@ def registration():
         elif birthday >= '2020-12-31':
             error = 'Дата не верна'
         if not error:
-            a = (id, email, name, second_name, birthday, password, phone)
+            a = (id, email, name, second_name, birthday, password, phone, adress)
             db.insert('client', a)
             res = make_response("")
             res.set_cookie("user", email, 60 * 60 * 24 * 15)
@@ -407,6 +408,7 @@ def reduct_profil():
     if request.method == 'POST':
         email = request.form.get('email')
         name = request.form.get('name')
+        adress = request.form.get('adress')
         second_name = request.form.get('second-name')
         birthday = request.form.get('birthday')
         phone = request.form.get('phone')
@@ -423,6 +425,8 @@ def reduct_profil():
                 db.update('client', id, 'birthday', birthday)
             if phone != user['phone']:
                 db.update('client', id, 'phone', phone)
+            if adress != user['adree']:
+                db.update('client', id, 'adree', adress)
             if email != user['email']:
                 db.update('client', id, 'email', email)
                 res = make_response("")
