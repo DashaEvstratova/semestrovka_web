@@ -1,7 +1,11 @@
+import hashlib
+import os
+
 from flask import Flask, render_template, request, redirect, url_for, make_response
 
 from db_util import Database
 from help_function import get_products_from_db, get_sets_from_db, get_toys
+from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__, static_folder='./static')
 
@@ -35,13 +39,14 @@ def registration():
         second_name = request.form.get('second-name')
         birthday = request.form.get('birthday')
         phone = request.form.get('phone')
-        password = request.form.get('psw')
-        rep_password = request.form.get('psw-repeat')
+        row_password = request.form.get('psw')
+        password = generate_password_hash(request.form.get('psw'))
+        rep_password = generate_password_hash(request.form.get('psw-repeat'))
         id = db.last_id('client') + 1
         emails = db.select_something('client', 'email')
         if email in emails:
             error = 'Пользователь с таким логином уже зарегестрирован'
-        if password != rep_password:
+        if not (check_password_hash(password, row_password) and check_password_hash(rep_password, row_password)):
             error = 'Пароли не совпадают'
         elif ('@' not in email or '.' not in email) and email != 'admin':
             error = 'Логин не верный'
@@ -79,7 +84,7 @@ def login():
         password = request.form.get('psw')
         clients = db.select_all('client')
         for client in clients:
-            if client['email'] == email and client['password'] == password:
+            if client['email'] == email and check_password_hash(client['password'], password):
                 res = make_response("")
                 res.set_cookie("user", email, 60 * 60 * 24 * 15)
                 res.headers['location'] = url_for('menu')
@@ -141,14 +146,13 @@ def get_product(product_id):
     email = request.cookies.get('user')
     product = db.select('id', product_id, 'products')
     like = '/static/nlike.jpg'
-    if request.cookies.get(f'like{email}'):
-        ids = request.cookies.get(f'like{email}').split('l')
-        for id in ids:
-            if int(id) == product['id']:
-                like = '/static/like.jpg'
     if len(product):
+        if request.cookies.get(f'like{email}'):
+            ids = request.cookies.get(f'like{email}').split('l')
+            for id in ids:
+                if int(id) == product['id']:
+                    like = '/static/like.jpg'
         return render_template("product.html", title=product['name'], product=product, like=like)
-
     # если нужный фильм не найден, возвращаем шаблон с ошибкой
     return render_template("error.html", error="Такой игрушки не существует в системе")
 
@@ -219,7 +223,7 @@ def reduct_product(product_id):
         if price != product['price'] and price is not None:
             db.update('products', id, 'price', price)
             res = True
-        if picture != product['picture'] and picture is not None:
+        if picture != product['picture'] and request.form.get('picture') is not None:
             db.update('products', id, 'picture', picture)
             res = True
         if res:
@@ -281,17 +285,13 @@ def backet():
     order = ''
     summ = 0
     for id in ids:
+        count = True
         product_id = id
-        count = 1
-        if 'c' in id:
-            id = id.split('c')
-            product_id = id[0]
-            count = id[1]
         product = db.select('id', product_id, 'products')
-        summ += (product['price'] * int(count))
-        products.append(product)
-        order += 'id:' + f'{product["id"]} ' + 'name:' + f'{product["name"]} ' + 'price:' + \
-                 f'{product["price"]}' + ";"
+        if product['status'] == 'True':
+            count = False
+            summ += (product['price'])
+            products.append(product)
     if not request.cookies.get('user'):
         return render_template("backet.html", products=products, mes='backet', user='False', summ=summ)
     client = db.select('email', email, 'client')['id']
@@ -300,12 +300,14 @@ def backet():
             id = 1
         else:
             id = db.last_id('squads') + 1
-        db.insert('squads', (client, order, id, summ))
+        for product in products:
+            id_product = product['id']
+            db.insert('squads', (client, id_product, id))
         res = make_response("Cookie Removed")
         res.set_cookie(f'bucket{email}', order, max_age=0)
         res.headers['location'] = url_for('order')
         return res, 302
-    return render_template("backet.html", products=products, mes='backet', summ=summ, user='True')
+    return render_template("backet.html", products=products, mes='backet', summ=summ, user='True', count=count)
 
 
 @app.route("/menu/order/")
@@ -385,39 +387,12 @@ def profil():
     order = db.select('id_client', user['id'], 'squads')
     user_product = []
     ids = []
-    if len(order) > 4:
+    if order:
         for product in order:
-            product = product['products'][:-1]
-            if ';' in product:
-                product = product.split(';')
-                for produc in product:
-                    id = produc.split(' ')[0].split(':')[-1]
-                    if id not in ids:
-                        ids.append(id)
-                        producty = db.select('id', id, 'products')
-                        user_product.append(producty)
-            else:
-                id = product.split(' ')[0].split(':')[-1]
-                if id not in ids:
-                    ids.append(id)
-                    producty = db.select('id', id, 'products')
-                    user_product.append(producty)
-    elif len(order) == 4:
-        order = order['products'][:-1]
-        if ';' in order:
-            product = order.split(';')
-            for produc in product:
-                id = produc.split(' ')[0].split(':')[-1]
-                if id not in ids:
-                    ids.append(id)
-                    producty = db.select('id', id, 'products')
-                    user_product.append(producty)
-        else:
-            id = order.split(' ')[0].split(':')[-1]
-            if id not in ids:
-                ids.append(id)
-                producty = db.select('id', id, 'products')
-                user_product.append(producty)
+            product = db.select('id', product['products'], 'products')
+            if product['id'] not in ids:
+                ids.append(product['id'])
+                user_product.append(product)
     if request.method == 'POST':
         return redirect(url_for('reduct_profil'), 301)
     return render_template("profil.html", user=user, products=user_product)

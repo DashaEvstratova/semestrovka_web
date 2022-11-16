@@ -33,8 +33,11 @@ class Database:
         self.cur.execute(f"SELECT {parametr} FROM {table};")
         a = self.help_select()
         res = []
-        for i in a:
-            res.append(i[parametr])
+        if len(a)>=2:
+            for i in a:
+                res.append(i[parametr])
+        else:
+            res.append(a[parametr])
         return res
 
     def help_select(self):
